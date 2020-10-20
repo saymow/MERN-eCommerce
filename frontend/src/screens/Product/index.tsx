@@ -1,15 +1,21 @@
-import React from "react";
-import { Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-
+import { ProductType } from "../../@types/cart";
 import Layout from "../../components/Layout";
 import Rating from "../../components/Rating";
-import products from "../../products";
+import api from "../../services/api";
 
 const Product: React.FC = () => {
   const { id } = useParams() as { id: string };
 
-  const product = products.find((_product) => _product._id === id);
+  const [product, setProduct] = useState<ProductType | undefined>();
+
+  useEffect(() => {
+    api.get("/products/" + id).then((response) => {
+      setProduct(response.data);
+    });
+  }, []);
 
   if (!product) {
     return <p>Loading...</p>;

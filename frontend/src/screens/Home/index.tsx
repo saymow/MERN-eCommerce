@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import products from "../../products";
+
+import api from "../../services/api";
 
 import Layout from "../../components/Layout";
 import Product from "../../components/Product";
 
+import { ProductType } from "../../@types/cart";
+
 const Home: React.FC = () => {
+  const [products, setProducuts] = useState<ProductType[]>([]);
+
+  useEffect(() => {
+    api.get("/products").then((response) => {
+      setProducuts(response.data);
+    });
+  }, []);
+
   return (
     <Layout>
       <h1>Latest products</h1>
