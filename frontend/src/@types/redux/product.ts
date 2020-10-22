@@ -1,10 +1,5 @@
-import { ApiError } from ".";
+import { ApiError, DefaultApiCall } from ".";
 import { ProductType } from "../cart";
-
-interface DefaultApiCall {
-  error?: ApiError;
-  loading: boolean;
-}
 
 export interface SingleProductState extends DefaultApiCall {
   product?: ProductType;

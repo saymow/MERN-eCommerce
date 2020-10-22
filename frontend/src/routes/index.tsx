@@ -6,6 +6,7 @@ import Header from "../components/Header";
 
 import Product from "../screens/Product";
 import Home from "../screens/Home";
+import CartScreen from "../screens/CartScreen";
 
 const Routes: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const Routes: React.FC = () => {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/product/:id" component={Product} />
+        <Route path="/cart/:id?" component={CartScreen} />
       </Switch>
     </Router>
   );
