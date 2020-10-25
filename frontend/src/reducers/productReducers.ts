@@ -6,7 +6,7 @@ import {
 } from "../@types/redux/product";
 
 export const productListReducer = (
-  state: ProductListState = { products: [], loading: false },
+  state: ProductListState = { products: [] },
   action: ProductListAction
 ): ProductListState => {
   switch (action.type) {
