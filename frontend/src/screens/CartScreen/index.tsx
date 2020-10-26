@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useHistory, Link } from "react-router-dom";
 import { TState } from "../../@types/redux";
 import { CartState } from "../../@types/redux/cart";
+import { UserState } from "../../@types/redux/user";
 import { addToCart, removeFromCart } from "../../actions/cartActions";
 import Layout from "../../components/Layout";
 import Message from "../../components/Message";
@@ -22,6 +23,9 @@ const CartScreen: React.FC = () => {
   const location = useLocation();
 
   const { cartItems } = useSelector<TState, CartState>((state) => state.cart);
+  const { userInfo } = useSelector<TState, UserState>(
+    (state) => state.userLogin
+  );
 
   const qty =
     parseInt(new URLSearchParams(location.search).get("qty") as string) ||
@@ -38,7 +42,7 @@ const CartScreen: React.FC = () => {
   }
 
   function handleCheckout() {
-    history.push("/login?redirect=shipping");
+    history.push(userInfo ? "/shipping" : "/login?redirect=shipping");
   }
 
   return (

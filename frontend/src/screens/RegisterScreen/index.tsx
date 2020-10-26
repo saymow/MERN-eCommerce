@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { TState } from "../../@types/redux";
 import { UserState } from "../../@types/redux/user";
 import { login, register } from "../../actions/userActions";
@@ -12,6 +12,7 @@ import Message from "../../components/Message";
 
 const RegisterScreen: React.FC = () => {
   const location = useLocation();
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -47,6 +48,10 @@ const RegisterScreen: React.FC = () => {
       return setMessage("Passwords do not match.");
 
     dispatch(register(name, email, password));
+
+    if (redirect) {
+      history.push("/" + redirect);
+    }
   }
 
   return (

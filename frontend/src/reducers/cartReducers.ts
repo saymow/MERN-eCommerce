@@ -32,6 +32,23 @@ export const cartReducer = (
         ...state,
         cartItems: newCartItems,
       };
+    case "CART_SAVE_SHIPPING_ADDRESS":
+      const { address, postalCode, city, country } = action.payload;
+
+      return {
+        ...state,
+        shippingAddress: { address, postalCode, city, country },
+      };
+
+    case "CART_SAVE_PAYMENT_METHOD":
+      const { method } = action.payload;
+
+      return {
+        ...state,
+        paymentMethod: {
+          method,
+        },
+      };
 
     default:
       return state;

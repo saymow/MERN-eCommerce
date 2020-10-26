@@ -1,4 +1,8 @@
-import { CartAction } from "../@types/redux/cart";
+import {
+  CartAction,
+  PaymentMethods,
+  ShippingAddress,
+} from "../@types/redux/cart";
 import api from "../services/api";
 
 export const addToCart = (id: string, qty: number) => async (
@@ -39,4 +43,28 @@ export const removeFromCart = (id: string) => async (
   });
 
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
+
+export const saveShippingAddress = (data: ShippingAddress) => async (
+  dispatch: (arg0: CartAction) => void
+) => {
+  dispatch({
+    type: "CART_SAVE_SHIPPING_ADDRESS",
+    payload: data,
+  });
+
+  localStorage.setItem("shippingAddress", JSON.stringify(data));
+};
+
+export const savePaymentMethod = (method: PaymentMethods) => async (
+  dispatch: (arg0: CartAction) => void
+) => {
+  dispatch({
+    type: "CART_SAVE_PAYMENT_METHOD",
+    payload: {
+      method,
+    },
+  });
+
+  localStorage.setItem("paymentMethod", JSON.stringify(method));
 };

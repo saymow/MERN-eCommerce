@@ -19,7 +19,7 @@ class UserController {
     return res.send(authenticatedUser);
   }
 
-  async show(req: Request, res: Response) {
+  async me(req: Request, res: Response) {
     const user = await User.findById(req.user._id);
 
     if (!user) throw new AppError("User not found", 404);
@@ -41,6 +41,77 @@ class UserController {
     const authenticatedUser = user.getAuthenticatedUser();
 
     return res.status(201).send(authenticatedUser);
+  }
+
+  async update(req: Request, res: Response) {
+    try {
+      const updates = Object.keys(req.body);
+      const validUpdates = ["name", "email", "password"];
+      const isValidUpdate = updates.every((key) => validUpdates.includes(key));
+
+      console.log(updates);
+
+      if (!isValidUpdate) throw new AppError("Invalid updates");
+
+      const user = await User.findById(req.user._id);
+
+      if (!user) throw new AppError("User not found", 404);
+
+      updates.map((key) => {
+        user[key as "name"] = req.body[key];
+      });
+
+      await user.save();
+
+      return res.send(user);
+    } catch (err) {
+      console.log(err);
+
+      if (err instanceof AppError)
+        throw new AppError(err.message, err.statusCode);
+
+      // as email is the unique "unique key" i'm assuming it
+      if (err.name === "MongoError" && err.code === 11000)
+        throw new AppError("Email already in use", 422);
+
+      throw Error();
+    }
+
+    // const updates = Object.keys(req.body);
+    // const validUpdates = ["name", "email", "password"];
+    // const isValidUpdate = updates.every((key) => validUpdates.includes(key));
+
+    // if (!isValidUpdate) throw new AppError("Invalid updates");
+
+    // const user = await User.findById(req.user._id);
+
+    // if (!user) throw new AppError("User not found", 404);
+
+    // updates.map((key) => {
+    //   user[key as "name"] = req.body[key];
+    // });
+
+    // user.save((err) => {
+    //   if (!err) return res.send(user);
+
+    //   console.log(err.name, err.code);
+
+    //   if (err.name === "MongoError" && err.code === 11000) {
+    //     return res.status(400).send({ message: "Email already in use" });
+    //   }
+
+    //   return res.send(err);
+    // });
+  }
+
+  async show(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) throw new AppError("User not found", 404);
+
+    res.send(user);
   }
 }
 

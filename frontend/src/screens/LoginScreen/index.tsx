@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { TState } from "../../@types/redux";
 import { UserState } from "../../@types/redux/user";
 import { login } from "../../actions/userActions";
@@ -12,6 +12,7 @@ import Message from "../../components/Message";
 
 const LoginScreen: React.FC = () => {
   const location = useLocation();
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -35,9 +36,17 @@ const LoginScreen: React.FC = () => {
     });
   }
 
+  console.log(redirect);
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     dispatch(login(formData.email, formData.password));
+
+    console.log(redirect);
+
+    if (redirect) {
+      history.push("/" + redirect);
+    }
   }
 
   return (

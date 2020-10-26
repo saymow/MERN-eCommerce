@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema(
     },
     isAdmin: {
       type: Boolean,
-      required: true,
       default: false,
     },
   },
@@ -51,7 +50,7 @@ userSchema.statics.findByCredentials = async (
   const user = await User.findOne({ email });
 
   if (!user || !(await bcrypt.compare(password, user.password)))
-    throw new AppError("Unauthorized", 401);
+    throw new AppError("Invalid email or password", 401);
 
   return user;
 };

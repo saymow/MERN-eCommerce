@@ -51,25 +51,24 @@ const OrderSchema = new mongoose.Schema(
       },
     },
     paymentMethod: {
-      type: String,
-      required: true,
+      method: {
+        type: String,
+        enum: ["PayPal", "Stripe"],
+        required: true,
+      },
     },
     paymentResult: {
       id: {
         type: String,
-        required: true,
       },
       status: {
         type: String,
-        required: true,
       },
       update_time: {
         type: String,
-        required: true,
       },
       email_address: {
         type: String,
-        required: true,
       },
     },
     taxPrice: {
