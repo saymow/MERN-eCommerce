@@ -4,6 +4,7 @@ import RestrictedRoute from "../components/RestrictedRoute";
 import CartScreen from "../screens/CartScreen";
 import Home from "../screens/Home";
 import LoginScreen from "../screens/LoginScreen";
+import OrderScreen from "../screens/OrderScreen";
 import PaymentScreen from "../screens/PaymentScreen";
 import PlaceOrderScreen from "../screens/PlaceOrderScreen";
 import Product from "../screens/Product";
@@ -49,6 +50,12 @@ const Routes: React.FC = () => {
         <RestrictedRoute
           path="/placeorder"
           component={PlaceOrderScreen}
+          authenticated
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/order/:id"
+          component={OrderScreen}
           authenticated
           fallback="/login"
         />

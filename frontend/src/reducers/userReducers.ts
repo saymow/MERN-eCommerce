@@ -89,6 +89,8 @@ export const userDetailsReducer = (
           message,
         },
       };
+    case "USER_DETAILS_RESET":
+      return {};
 
     default:
       return state;

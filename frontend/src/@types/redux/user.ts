@@ -30,7 +30,8 @@ export type UserDetailsAction =
       type: "USER_DETAILS_SUCCESS";
       payload: User;
     }
-  | { type: "USER_DETAILS_FAIL"; payload: ApiError };
+  | { type: "USER_DETAILS_FAIL"; payload: ApiError }
+  | { type: "USER_DETAILS_RESET" };
 
 export type UserRegisterAction =
   | { type: "USER_REGISTER_REQUEST" }

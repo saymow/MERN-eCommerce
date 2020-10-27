@@ -1,3 +1,4 @@
+import { ListMyOrdersAction } from "../@types/redux/order";
 import {
   UserDetailsAction,
   UserLoginAction,
@@ -144,9 +145,13 @@ export const updateUserProfile = (user: UpdateUser) => async (
 };
 
 export const logout = () => async (
-  dispatch: (arg0: UserLoginAction) => void
+  dispatch: (
+    arg0: UserLoginAction | UserDetailsAction | ListMyOrdersAction
+  ) => void
 ) => {
   localStorage.removeItem("userInfo");
 
   dispatch({ type: "USER_LOGOUT" });
+  dispatch({ type: "ORDER_LIST_MY_RESET" });
+  dispatch({ type: "USER_DETAILS_RESET" });
 };

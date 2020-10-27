@@ -1,5 +1,5 @@
 import { CartState } from "./cart";
-import { OrderState } from "./order";
+import { OrderDetailsState, OrderlistState, OrderState } from "./order";
 import { ProductListState, SingleProductState } from "./product";
 import { UserState } from "./user";
 
@@ -12,6 +12,9 @@ export interface TState {
   userDetails: UserState;
   userUpdateProfile: UserState & { success: true };
   orderCreate: OrderState;
+  orderDetails: OrderDetailsState;
+  orderPay: DefaultApiCall;
+  orderMyList: OrderlistState;
 }
 
 export interface DefaultApiCall {
