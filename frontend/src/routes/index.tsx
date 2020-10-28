@@ -11,6 +11,8 @@ import Product from "../screens/Product";
 import ProfileScreen from "../screens/ProfileScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ShippingScreen from "../screens/ShippingScreen";
+import UserEditScreen from "../screens/UserEditScreen";
+import UserListScreen from "../screens/UserListScreen";
 
 const Routes: React.FC = () => {
   return (
@@ -57,6 +59,20 @@ const Routes: React.FC = () => {
           path="/order/:id"
           component={OrderScreen}
           authenticated
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/admin/userlist"
+          component={UserListScreen}
+          authenticated
+          admin
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/admin/user/:id/edit"
+          component={UserEditScreen}
+          authenticated
+          admin
           fallback="/login"
         />
       </Switch>

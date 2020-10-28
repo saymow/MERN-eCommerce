@@ -6,6 +6,10 @@ import {
   User,
   UserUpdateAction,
   UpdateUser,
+  UserlistAction,
+  UserDeleteAction,
+  UserUpdateAsAdmin,
+  UserUpdateAsAdminAction,
 } from "../@types/redux/user";
 import api from "../services/api";
 
@@ -91,7 +95,7 @@ export const userDetails = (id?: string) => async (
       },
     };
 
-    const { data } = await api.get(`/users/${id ? id : ""}`, config);
+    const { data } = await api.get(`/users/${id ? id : "me"}`, config);
 
     dispatch({ type: "USER_DETAILS_SUCCESS", payload: data });
   } catch (err) {
@@ -144,9 +148,105 @@ export const updateUserProfile = (user: UpdateUser) => async (
   }
 };
 
+export const listUsers = () => async (
+  dispatch: (arg0: UserlistAction) => void,
+  getState: any
+) => {
+  try {
+    dispatch({ type: "USER_LIST_REQUEST" });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await api.get("/users", config);
+
+    dispatch({ type: "USER_LIST_SUCCESS", payload: data });
+  } catch (err) {
+    console.error(err.response.data);
+
+    dispatch({
+      type: "USER_LIST_FAIL",
+      payload: { message: err?.response?.data?.message || err.message },
+    });
+  }
+};
+
+export const deleteUser = (id: string) => async (
+  dispatch: (arg0: UserDeleteAction) => void,
+  getState: any
+) => {
+  try {
+    dispatch({ type: "USER_DELETE_REQUEST" });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await api.delete(`/users/${id}`, config);
+
+    dispatch({ type: "USER_DELETE_SUCCESS" });
+  } catch (err) {
+    console.error(err.response.data);
+
+    dispatch({
+      type: "USER_DELETE_FAIL",
+      payload: { message: err?.response?.data?.message || err.message },
+    });
+  }
+};
+
+export const updateUser = (id, user: any) => async (
+  dispatch: (arg0: UserUpdateAsAdminAction | UserDetailsAction) => void,
+  getState: any
+) => {
+  try {
+    dispatch({ type: "USER_UPDATE_REQUEST" });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await api.put(`/users/${id}`, user, config);
+
+    dispatch({ type: "USER_UPDATE_SUCCESS", payload: data });
+
+    dispatch({ type: "USER_DETAILS_SUCCESS", payload: data });
+  } catch (err) {
+    console.error(err.response.data);
+
+    dispatch({
+      type: "USER_UPDATE_FAIL",
+      payload: { message: err?.response?.data?.message || err.message },
+    });
+  }
+};
+
 export const logout = () => async (
   dispatch: (
-    arg0: UserLoginAction | UserDetailsAction | ListMyOrdersAction
+    arg0:
+      | UserLoginAction
+      | UserDetailsAction
+      | ListMyOrdersAction
+      | UserlistAction
   ) => void
 ) => {
   localStorage.removeItem("userInfo");
@@ -154,4 +254,5 @@ export const logout = () => async (
   dispatch({ type: "USER_LOGOUT" });
   dispatch({ type: "ORDER_LIST_MY_RESET" });
   dispatch({ type: "USER_DETAILS_RESET" });
+  dispatch({ type: "USER_LIST_RESET" });
 };

@@ -6,11 +6,13 @@ import { UserState } from "../../@types/redux/user";
 
 interface RestrictedRouteProps extends RouteProps {
   authenticated?: boolean;
+  admin?: boolean;
   fallback: string;
 }
 
 const RestrictedRoute: React.FC<RestrictedRouteProps> = ({
   authenticated = false,
+  admin = false,
   fallback,
   ...rest
 }) => {
@@ -24,9 +26,18 @@ const RestrictedRoute: React.FC<RestrictedRouteProps> = ({
   // auth && !restricted => Redirect
   // !auth && !restricted => Route
   const ensureAuth = Boolean(userInfo);
+  const hasAdminRights = userInfo?.isAdmin;
+  const AuthRoute =
+    ensureAuth === authenticated ? (
+      <Route {...rest} />
+    ) : (
+      <Redirect to={fallback} />
+    );
 
-  return ensureAuth === authenticated ? (
-    <Route {...rest} />
+  return !admin ? (
+    AuthRoute
+  ) : hasAdminRights ? (
+    AuthRoute
   ) : (
     <Redirect to={fallback} />
   );

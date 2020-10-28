@@ -37,3 +37,10 @@ export default async function AuthMiddleware(
     }
   );
 }
+
+export const admin = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user || !req.user.isAdmin)
+    throw new AppError("Unauthorized as admin", 401);
+
+  next();
+};

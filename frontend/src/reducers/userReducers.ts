@@ -1,9 +1,15 @@
 import {
+  UserDeleteAction,
+  UserDeletedState,
   UserDetailsAction,
+  UserlistAction,
+  UserListState,
   UserLoginAction,
   UserRegisterAction,
   UserState,
   UserUpdateAction,
+  UserUpdateAsAdminAction,
+  UserUpdateAsAdminState,
 } from "../@types/redux/user";
 
 export const userLoginReducer = (
@@ -121,6 +127,95 @@ export const userUpdateProfileReducer = (
         },
       };
     case "USER_UPDATE_PROFILE_RESET":
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+export const userListReducer = (
+  state: UserListState = { users: [] },
+  action: UserlistAction
+): UserListState => {
+  switch (action.type) {
+    case "USER_LIST_REQUEST":
+      return { ...state, loading: true };
+    case "USER_LIST_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        users: action.payload,
+      };
+    case "USER_LIST_FAIL":
+      const { message } = action.payload;
+
+      return {
+        ...state,
+        loading: false,
+        error: {
+          message,
+        },
+      };
+
+    case "USER_LIST_RESET":
+      return { ...state, users: [] };
+
+    default:
+      return state;
+  }
+};
+
+export const userDeleteReducer = (
+  state: UserDeletedState = {},
+  action: UserDeleteAction
+): UserDeletedState => {
+  switch (action.type) {
+    case "USER_DELETE_REQUEST":
+      return { ...state, loading: true };
+    case "USER_DELETE_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+      };
+    case "USER_DELETE_FAIL":
+      const { message } = action.payload;
+
+      return {
+        ...state,
+        loading: false,
+        error: {
+          message,
+        },
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const userUpdateReducer = (
+  state: UserUpdateAsAdminState = {},
+  action: UserUpdateAsAdminAction
+): UserUpdateAsAdminState => {
+  switch (action.type) {
+    case "USER_UPDATE_REQUEST":
+      return { ...state, loading: true };
+    case "USER_UPDATE_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+      };
+    case "USER_UPDATE_FAIL":
+      const { message } = action.payload;
+
+      return {
+        loading: false,
+        error: {
+          message,
+        },
+      };
+    case "USER_UPDATE_RESET":
       return {};
 
     default:

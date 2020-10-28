@@ -49,11 +49,11 @@ class UserController {
       const validUpdates = ["name", "email", "password"];
       const isValidUpdate = updates.every((key) => validUpdates.includes(key));
 
-      console.log(updates);
+      const { id } = req.user;
 
       if (!isValidUpdate) throw new AppError("Invalid updates");
 
-      const user = await User.findById(req.user._id);
+      const user = await User.findById(id);
 
       if (!user) throw new AppError("User not found", 404);
 
@@ -65,8 +65,6 @@ class UserController {
 
       return res.send(user);
     } catch (err) {
-      console.log(err);
-
       if (err instanceof AppError)
         throw new AppError(err.message, err.statusCode);
 
@@ -112,6 +110,57 @@ class UserController {
     if (!user) throw new AppError("User not found", 404);
 
     res.send(user);
+  }
+
+  async updateAsAdmin(req: Request, res: Response) {
+    try {
+      const updates = Object.keys(req.body);
+      const validUpdates = ["name", "email", "isAdmin"];
+      const isValidUpdate = updates.every((key) => validUpdates.includes(key));
+
+      const { id } = req.params;
+
+      if (!isValidUpdate) throw new AppError("Invalid updates");
+
+      const user = await User.findById(id);
+
+      if (!user) throw new AppError("User not found", 404);
+
+      updates.map((key) => {
+        user[key as "name"] = req.body[key];
+      });
+
+      await user.save();
+
+      return res.send(user);
+    } catch (err) {
+      if (err instanceof AppError)
+        throw new AppError(err.message, err.statusCode);
+
+      // as email is the unique "unique key" i'm assuming it
+      if (err.name === "MongoError" && err.code === 11000)
+        throw new AppError("Email already in use", 422);
+
+      throw Error();
+    }
+  }
+
+  async index(req: Request, res: Response) {
+    const users = await User.find({});
+
+    res.send(users);
+  }
+
+  async destroy(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const user = await User.findById(id as string);
+
+    if (!user) throw new AppError("User not found", 404);
+
+    await user.remove();
+
+    return res.send({ message: "User removed" });
   }
 }
 
