@@ -20,3 +20,36 @@ export type ProductListAction =
     }
   | { type: "PRODUCT_LIST_SUCCESS"; payload: ProductType[] }
   | { type: "PRODUCT_LIST_FAIL"; payload: ApiError };
+
+export type ProductDeleteAction =
+  | {
+      type: "PRODUCT_DELETE_REQUEST";
+    }
+  | { type: "PRODUCT_DELETE_SUCCESS" }
+  | { type: "PRODUCT_DELETE_FAIL"; payload: ApiError };
+
+export type ProductCreateAction =
+  | {
+      type: "PRODUCT_CREATE_REQUEST";
+    }
+  | { type: "PRODUCT_CREATE_SUCCESS"; payload: ProductType }
+  | { type: "PRODUCT_CREATE_FAIL"; payload: ApiError }
+  | { type: "PRODUCT_CREATE_RESET" };
+
+export interface ProductCreateState extends DefaultApiCall {
+  success?: boolean;
+  product?: ProductType;
+}
+
+export type ProductUpdateAction =
+  | {
+      type: "PRODUCT_UPDATE_REQUEST";
+    }
+  | { type: "PRODUCT_UPDATE_SUCCESS"; payload: ProductType }
+  | { type: "PRODUCT_UPDATE_FAIL"; payload: ApiError }
+  | { type: "PRODUCT_UPDATE_RESET" };
+
+export interface ProductUpdateState extends DefaultApiCall {
+  success?: boolean;
+  product?: ProductType;
+}

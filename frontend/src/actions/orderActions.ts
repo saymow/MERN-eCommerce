@@ -1,7 +1,9 @@
 import {
   ListMyOrdersAction,
   OrderActions,
+  OrderDeliverAction,
   OrderDetailsAction,
+  OrderListAction,
   OrderPayActions,
 } from "../@types/redux/order";
 import api from "../services/api";
@@ -69,7 +71,7 @@ export const getOrderDetails = (id: string) => async (
       payload: data,
     });
   } catch (err) {
-    console.error(err.response.data);
+    console.error(err);
 
     dispatch({
       type: "ORDER_DETAILS_FAIL",
@@ -144,6 +146,77 @@ export const listMyOrders = () => async (
 
     dispatch({
       type: "ORDER_LIST_MY_FAIL",
+      payload: { message: err?.response?.data?.message || err.message },
+    });
+  }
+};
+
+export const listOrders = () => async (
+  dispatch: (arg0: OrderListAction) => void,
+  getState
+) => {
+  try {
+    dispatch({
+      type: "ORDER_LIST_REQUEST",
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    let config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await api.get(`/orders/`, config);
+
+    dispatch({
+      type: "ORDER_LIST_SUCCESS",
+      payload: data,
+    });
+  } catch (err) {
+    console.error(err.response.data);
+
+    dispatch({
+      type: "ORDER_LIST_FAIL",
+      payload: { message: err?.response?.data?.message || err.message },
+    });
+  }
+};
+
+export const deliveOrder = (id: string) => async (
+  dispatch: (arg0: OrderDeliverAction) => void,
+  getState
+) => {
+  try {
+    dispatch({
+      type: "ORDER_DELIVER_REQUEST",
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await api.put(`/orders/${id}/deliver`, {}, config);
+
+    dispatch({
+      type: "ORDER_DELIVER_SUCCESS",
+      payload: data,
+    });
+  } catch (err) {
+    console.error(err.response.data);
+
+    dispatch({
+      type: "ORDER_DELIVER_FAIL",
       payload: { message: err?.response?.data?.message || err.message },
     });
   }

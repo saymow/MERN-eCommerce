@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { PayPalButton, PaypalOptions } from "react-paypal-button-v2";
-import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { DefaultApiCall, TState } from "../../@types/redux";
 import { OrderDetailsState } from "../../@types/redux/order";
-import { getOrderDetails, payOrder } from "../../actions/orderActions";
+import {
+  deliveOrder,
+  devliverOrder,
+  getOrderDetails,
+  payOrder,
+} from "../../actions/orderActions";
 import Layout from "../../components/Layout";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import api from "../../services/api";
+import { User, UserState } from "../../@types/redux/user";
 
 // import { Container } from './styles';
 
@@ -20,11 +26,20 @@ const OrderScreen: React.FC = () => {
 
   const [sdkReady, setSdkReady] = useState(false);
 
+  const { userInfo } = useSelector<TState, UserState>(
+    (state) => state.userLogin
+  );
+
+  console.log(userInfo);
+
   const { order, loading, error } = useSelector<TState, OrderDetailsState>(
     (state) => state.orderDetails
   );
 
-  console.log(order);
+  const { loading: loadingDeliver, success: successDeliver } = useSelector<
+    TState,
+    DefaultApiCall
+  >((state) => state.orderDeliver);
 
   const { loading: payLoading, success: successPay } = useSelector<
     TState,
@@ -51,18 +66,22 @@ const OrderScreen: React.FC = () => {
       document.body.appendChild(scriptEl);
     };
 
-    if (!order || order._id !== id || successPay) {
+    if (!order || order._id !== id || successPay || successDeliver) {
       dispatch({ type: "ORDER_PAY_RESET" });
+      dispatch({ type: "ORDER_DELIVER_RESET" });
       dispatch(getOrderDetails(id));
     } else if (!order.isPaid) {
       if (!window.paypal) addPayPalScript();
       else setSdkReady(true);
     }
-  }, [order, id, successPay]);
+  }, [order, id, successPay, successDeliver]);
 
   function handleSuccessPayment(paymentResult: any) {
-    console.log(paymentResult);
     dispatch(payOrder(id, paymentResult));
+  }
+
+  function handleDeliverOrder(id: string) {
+    dispatch(deliveOrder(id));
   }
 
   return (
@@ -190,6 +209,18 @@ const OrderScreen: React.FC = () => {
                           onSuccess={handleSuccessPayment}
                         />
                       )}
+                    </ListGroup.Item>
+                  )}
+
+                  {userInfo?.isAdmin && order.isPaid && !order.isDelivered && (
+                    <ListGroup.Item>
+                      <Button
+                        type="button"
+                        className="btn btn-block"
+                        onClick={() => handleDeliverOrder(order._id)}
+                      >
+                        Mark as Delivered
+                      </Button>
                     </ListGroup.Item>
                   )}
                 </ListGroup>

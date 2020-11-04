@@ -70,6 +70,23 @@ class OrderController {
     return res.send(order);
   }
 
+  async updateOrderToDelivered(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const order = await Order.findOne({
+      _id: id,
+    });
+
+    if (!order) throw new AppError("Order not found", 404);
+
+    (order as any).isDelivered = true;
+    (order as any).deliveredAt = Date.now();
+
+    await order.save();
+
+    return res.send(order);
+  }
+
   async show(req: Request, res: Response) {
     const { id } = req.params;
     // for some reason id matches the _id key on user object.
@@ -87,11 +104,16 @@ class OrderController {
 
   async index(req: Request, res: Response) {
     const { id } = req.user;
-    console.log(id);
 
     const orders = await Order.find({ user: { _id: id } });
 
     res.send(orders);
+  }
+
+  async indexAll(req: Request, res: Response) {
+    const orders = await Order.find({}).populate("user", "id name");
+
+    return res.send(orders);
   }
 }
 

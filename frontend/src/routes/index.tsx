@@ -4,10 +4,13 @@ import RestrictedRoute from "../components/RestrictedRoute";
 import CartScreen from "../screens/CartScreen";
 import Home from "../screens/Home";
 import LoginScreen from "../screens/LoginScreen";
+import OrderListScreen from "../screens/OrderListScreen";
 import OrderScreen from "../screens/OrderScreen";
 import PaymentScreen from "../screens/PaymentScreen";
 import PlaceOrderScreen from "../screens/PlaceOrderScreen";
 import Product from "../screens/Product";
+import ProductEditScreen from "../screens/ProductEditScreen";
+import ProductListScreen from "../screens/ProductListScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ShippingScreen from "../screens/ShippingScreen";
@@ -71,6 +74,27 @@ const Routes: React.FC = () => {
         <RestrictedRoute
           path="/admin/user/:id/edit"
           component={UserEditScreen}
+          authenticated
+          admin
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/admin/productlist"
+          component={ProductListScreen}
+          authenticated
+          admin
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/admin/products/:id/edit"
+          component={ProductEditScreen}
+          authenticated
+          admin
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/admin/orderlist"
+          component={OrderListScreen}
           authenticated
           admin
           fallback="/login"

@@ -7,6 +7,8 @@ import {
   OrderPayActions,
   OrderlistState,
   ListMyOrdersAction,
+  OrderListAction,
+  OrderDeliverAction,
 } from "../@types/redux/order";
 
 export const orderCreateReducer = (
@@ -129,6 +131,73 @@ export const orderMyListReducer = (
       return { orders: [] };
     }
 
+    default:
+      return state;
+  }
+};
+
+export const orderListReducer = (
+  state: OrderlistState & { success?: boolean } = { orders: [] },
+  action: OrderListAction
+): OrderlistState & { success?: boolean } => {
+  switch (action.type) {
+    case "ORDER_LIST_REQUEST":
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case "ORDER_LIST_SUCCESS":
+      const orders = action.payload;
+
+      return {
+        orders,
+        loading: false,
+        success: true,
+      };
+
+    case "ORDER_LIST_FAIL":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case "ORDER_LIST_RESET": {
+      return { orders: [] };
+    }
+
+    default:
+      return state;
+  }
+};
+
+export const orderDeliverReducer = (
+  state: DefaultApiCall & { success?: boolean } = {},
+  action: OrderDeliverAction
+): DefaultApiCall & { success?: boolean } => {
+  switch (action.type) {
+    case "ORDER_DELIVER_REQUEST":
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case "ORDER_DELIVER_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+      };
+
+    case "ORDER_DELIVER_FAIL":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case "ORDER_DELIVER_RESET":
+      return {};
     default:
       return state;
   }

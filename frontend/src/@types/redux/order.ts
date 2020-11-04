@@ -68,3 +68,31 @@ export type ListMyOrdersAction =
       payload: ApiError;
     }
   | { type: "ORDER_LIST_MY_RESET" };
+
+export type OrderListAction =
+  | {
+      type: "ORDER_LIST_REQUEST";
+    }
+  | {
+      type: "ORDER_LIST_SUCCESS";
+      payload: any;
+    }
+  | {
+      type: "ORDER_LIST_FAIL";
+      payload: ApiError;
+    }
+  | { type: "ORDER_LIST_RESET" };
+
+export type OrderDeliverAction =
+  | {
+      type: "ORDER_DELIVER_REQUEST";
+    }
+  | {
+      type: "ORDER_DELIVER_SUCCESS";
+      payload: any;
+    }
+  | {
+      type: "ORDER_DELIVER_FAIL";
+      payload: ApiError;
+    }
+  | { type: "ORDER_DELIVER_RESET" };

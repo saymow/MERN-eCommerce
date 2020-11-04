@@ -2,6 +2,7 @@ import "colors";
 import cors from "cors";
 import express from "express";
 import "express-async-errors";
+import path from "path";
 import connectDB from "./database";
 import { errorHandler, notFound } from "./middleware/errorMiddleware";
 import routes from "./routes";
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", routes);
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 app.use(notFound);
 app.use(errorHandler);
