@@ -5,9 +5,39 @@ import AppError from "../errors/AppError";
 
 class ProductsController {
   async index(req: Request, res: Response) {
-    const products = await Product.find({});
+    let { keyword, pageNumber = 1, pageSize = 4 } = req.query as {
+      keyword?: string;
+      pageNumber?: string;
+      pageSize?: string;
+    };
 
-    return res.send(products);
+    pageNumber = pageNumber ? pageNumber : 1;
+
+    const filters = keyword
+      ? {
+          name: {
+            $regex: keyword,
+            $options: "i",
+          },
+        }
+      : {};
+
+    console.log("params: ", pageNumber, pageSize);
+
+    const count = await Product.countDocuments({ ...filters });
+    const products = await Product.find({
+      ...filters,
+    })
+      .limit(Number(pageSize))
+      .skip(Number(pageSize) * (Number(pageNumber) - 1));
+
+    console.log(pageNumber);
+
+    return res.send({
+      products,
+      page: pageNumber,
+      pages: Math.ceil(count / Number(pageSize)),
+    });
   }
 
   async show(req: Request, res: Response) {
@@ -79,6 +109,46 @@ class ProductsController {
     await product.save();
 
     return res.send(product);
+  }
+
+  async createProductReview(req: Request, res: Response) {
+    const productId = req.params.id;
+    const userId = req.user._id;
+
+    const { rating, comment } = req.body;
+
+    const product = await Product.findById(productId);
+
+    if (!product) throw new AppError("Product not found", 404);
+
+    const alreadyReviewed = await (product as any).reviews.find(
+      (r) => r.user.toString() === userId.toString()
+    );
+
+    if (alreadyReviewed) throw new AppError("Product already reviewed");
+
+    const review = {
+      user: userId,
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+    };
+
+    (product as any).reviews.push(review);
+    (product as any).numReviews = (product as any).reviews.length;
+    (product as any).rating =
+      (product as any).reviews.reduce((acc, item) => item.rating + acc, 0) /
+      (product as any).reviews.length;
+
+    await product.save();
+
+    return res.status(201).send({ message: "Review added" });
+  }
+
+  async getTopProducts(req: Request, res: Response) {
+    const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+
+    return res.send(products);
   }
 }
 

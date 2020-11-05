@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TState } from "../../@types/redux";
 import { UserState } from "../../@types/redux/user";
 import { logout } from "../../actions/userActions";
+import SearchBox from "../SearchBox";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const Header: React.FC = () => {
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
+            <SearchBox />
             <Nav className="ml-auto ">
               <LinkContainer to="/cart">
                 <Nav.Link href="/cart">

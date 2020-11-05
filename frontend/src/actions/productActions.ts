@@ -1,19 +1,23 @@
 import {
   ProductCreateAction,
+  ProductCreateReviewAction,
   ProductDeleteAction,
   ProductListAction,
+  ProductTopsAction,
   ProductUpdateAction,
   SingleProductAction,
 } from "../@types/redux/product";
 import api from "../services/api";
 
-export const listProducts = () => async (
+export const listProducts = (keyword = "", pageNumber = "") => async (
   dispatch: (arg0: ProductListAction) => void
 ) => {
   try {
     dispatch({ type: "PRODUCT_LIST_REQUEST" });
 
-    const { data } = await api.get("/products");
+    const { data } = await api.get(
+      `/products?keyword=${keyword}&pageNumber=${pageNumber}`
+    );
 
     dispatch({
       type: "PRODUCT_LIST_SUCCESS",
@@ -23,7 +27,7 @@ export const listProducts = () => async (
     dispatch({
       type: "PRODUCT_LIST_FAIL",
       payload: {
-        message: err.response.data.message
+        message: err.response?.data?.message
           ? err.response.data.message
           : err.message,
       },
@@ -161,6 +165,70 @@ export const updateProduct = (id: string, product: any) => async (
       type: "PRODUCT_UPDATE_FAIL",
       payload: {
         message: err.response.data.message
+          ? err.response.data.message
+          : err.message,
+      },
+    });
+  }
+};
+
+export const createProductReview = (
+  id: string,
+  review: { comment: string; rating: number }
+) => async (
+  dispatch: (arg0: ProductCreateReviewAction) => void,
+  getState: any
+) => {
+  try {
+    dispatch({
+      type: "PRODUCT_CREATE_REVIEW_REQUEST",
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    await api.post(`products/${id}/reviews`, review, config);
+
+    dispatch({
+      type: "PRODUCT_CREATE_REVIEW_SUCCESS",
+    });
+  } catch (err) {
+    dispatch({
+      type: "PRODUCT_CREATE_REVIEW_FAIL",
+      payload: {
+        message: err.response.data.message
+          ? err.response.data.message
+          : err.message,
+      },
+    });
+  }
+};
+
+export const listTopProducts = () => async (
+  dispatch: (arg0: ProductTopsAction) => void
+) => {
+  try {
+    dispatch({ type: "PRODUCT_TOP_REQUEST" });
+
+    const { data } = await api.get("/products/top");
+
+    dispatch({
+      type: "PRODUCT_TOP_SUCCESS",
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: "PRODUCT_TOP_FAIL",
+      payload: {
+        message: err.response?.data?.message
           ? err.response.data.message
           : err.message,
       },

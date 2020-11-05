@@ -10,7 +10,7 @@ type ProductType = {
   brand: string;
   category: string;
   user: string;
-  reviews: string[];
+  reviews: any[];
   createdAt: string;
   updatedAt: string;
 };

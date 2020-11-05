@@ -22,6 +22,13 @@ const Routes: React.FC = () => {
     <Router>
       <Switch>
         <Route path="/" exact component={Home} />
+        <Route
+          path="/search/:keyword/page/:pageNumber"
+          exact
+          component={Home}
+        />
+        <Route path="/search/:keyword" component={Home} />
+        <Route path="/page/:pageNumber" component={Home} />
         <Route path="/product/:id" component={Product} />
         <Route path="/cart/:id?" component={CartScreen} />
         <RestrictedRoute
@@ -74,6 +81,13 @@ const Routes: React.FC = () => {
         <RestrictedRoute
           path="/admin/user/:id/edit"
           component={UserEditScreen}
+          authenticated
+          admin
+          fallback="/login"
+        />
+        <RestrictedRoute
+          path="/admin/productlist/:pageNumber"
+          component={ProductListScreen}
           authenticated
           admin
           fallback="/login"

@@ -3,7 +3,7 @@ import { Property } from "csstype";
 
 interface RatingProps {
   value: number;
-  text: string;
+  text?: string;
   color?: Property.Color;
 }
 

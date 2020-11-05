@@ -19,6 +19,8 @@ export interface TState {
   productDelete: DefaultApiCall;
   productCreate: ProductCreateState;
   productUpdate: ProductUpdateState;
+  productReviewCreate: DefaultApiCall;
+  productTopRated: ProductListState;
   cart: CartState;
   userLogin: UserState;
   userRegister: UserState;

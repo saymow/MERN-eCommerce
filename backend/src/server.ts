@@ -1,7 +1,8 @@
 import "colors";
+import "express-async-errors";
 import cors from "cors";
 import express from "express";
-import "express-async-errors";
+import morgan from "morgan";
 import path from "path";
 import connectDB from "./database";
 import { errorHandler, notFound } from "./middleware/errorMiddleware";
@@ -11,6 +12,10 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3333;
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 app.use(cors());
 app.use(express.json());

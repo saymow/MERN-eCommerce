@@ -12,13 +12,22 @@ export type SingleProductAction =
 
 export interface ProductListState extends DefaultApiCall {
   products: ProductType[];
+  pages?: number;
+  page?: number;
 }
 
 export type ProductListAction =
   | {
       type: "PRODUCT_LIST_REQUEST";
     }
-  | { type: "PRODUCT_LIST_SUCCESS"; payload: ProductType[] }
+  | {
+      type: "PRODUCT_LIST_SUCCESS";
+      payload: {
+        products: ProductType[];
+        page: number;
+        pages: number;
+      };
+    }
   | { type: "PRODUCT_LIST_FAIL"; payload: ApiError };
 
 export type ProductDeleteAction =
@@ -48,6 +57,21 @@ export type ProductUpdateAction =
   | { type: "PRODUCT_UPDATE_SUCCESS"; payload: ProductType }
   | { type: "PRODUCT_UPDATE_FAIL"; payload: ApiError }
   | { type: "PRODUCT_UPDATE_RESET" };
+
+export type ProductCreateReviewAction =
+  | {
+      type: "PRODUCT_CREATE_REVIEW_REQUEST";
+    }
+  | { type: "PRODUCT_CREATE_REVIEW_SUCCESS" }
+  | { type: "PRODUCT_CREATE_REVIEW_FAIL"; payload: ApiError }
+  | { type: "PRODUCT_CREATE_REVIEW_RESET" };
+
+export type ProductTopsAction =
+  | {
+      type: "PRODUCT_TOP_REQUEST";
+    }
+  | { type: "PRODUCT_TOP_SUCCESS"; payload: ProductType[] }
+  | { type: "PRODUCT_TOP_FAIL"; payload: ApiError };
 
 export interface ProductUpdateState extends DefaultApiCall {
   success?: boolean;
